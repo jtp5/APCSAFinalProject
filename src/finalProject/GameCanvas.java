@@ -28,7 +28,7 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 	public GameCanvas() {
 		setBackground(Color.black);
 
-		keys = new boolean[5];
+		keys = new boolean[4];
 		pirate = new Pirate(300, 300, 2);
 		round = 0;
 
@@ -60,23 +60,46 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 		
 		pirate.draw(graphToBack);
 		
+		if(keys[0] == true)
+		{
+			pirate.move("LEFT");
+		}
+
+		if(keys[1] == true){
+			pirate.move("RIGHT");
+		}
+		
 		twoDGraph.drawImage(back, null, 0, 0);
 	}
 
 	@Override
-	public void keyPressed(KeyEvent arg0) {
+	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-
+		if(e.getKeyCode() == KeyEvent.VK_LEFT){
+			keys[0] = true;
+			pirate.setFacing("LEFT");
+		}
+		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+			keys[1] = true;
+			pirate.setFacing("RIGHT");
+		}
 	}
 
 	@Override
-	public void keyReleased(KeyEvent arg0) {
+	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-
+		if (e.getKeyCode() == KeyEvent.VK_LEFT)
+		{
+			keys[0] = false;
+		}
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
+		{
+			keys[1] = false;
+		}
 	}
 
 	@Override
-	public void keyTyped(KeyEvent arg0) {
+	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
 
 	}
