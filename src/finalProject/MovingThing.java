@@ -7,15 +7,18 @@ public abstract class MovingThing implements Locatable {
 	private int xPos;
 	private int yPos;
 	private String facing;
+	private boolean endedJump;
 
 	public MovingThing() {
 		setPos(200, 200);
 		setFacing("LEFT");
+		endedJump = false;
 	}
 
 	public MovingThing(int x, int y) {
 		setPos(x, y);
 		setFacing("LEFT");
+		endedJump = false;
 	}
 
 	public void setPos(int x, int y) {
@@ -46,6 +49,10 @@ public abstract class MovingThing implements Locatable {
 	public String getFacing() {
 		return facing;
 	}
+	
+	public boolean endedJump(){
+		return endedJump;
+	}
 
 	public abstract void setSpeed(int s);
 
@@ -60,9 +67,12 @@ public abstract class MovingThing implements Locatable {
 		if (direction.equals("RIGHT"))
 			setX(getX() + getSpeed());
 
-		// if (direction.equals("UP")) {
-		// setY(getY() - getSpeed());
-		// }
+		 if (direction.equals("UP") && !endedJump) {
+				 setY(getY() - getSpeed());
+				 if(getY() < 201){
+					 endedJump = true;
+				 }
+		 }
 		// if(direction.equals("DOWN"))
 		// setY(getY()+getSpeed());
 	}

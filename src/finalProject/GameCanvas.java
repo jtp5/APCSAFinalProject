@@ -60,6 +60,10 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 		
 		pirate.draw(graphToBack);
 		
+		if(pirate.endedJump()){
+			pirate.setY(pirate.getY() + pirate.getSpeed());
+		}
+		
 		if(keys[0] == true)
 		{
 			pirate.move("LEFT");
@@ -67,6 +71,9 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 
 		if(keys[1] == true){
 			pirate.move("RIGHT");
+		}
+		if(keys[2] == true && pirate.getY() <= 300 && pirate.getY() >= pirate.getY() - 100){
+			pirate.move("UP");
 		}
 		
 		twoDGraph.drawImage(back, null, 0, 0);
@@ -82,6 +89,9 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
 			keys[1] = true;
 			pirate.setFacing("RIGHT");
+		}
+		if(e.getKeyCode() == KeyEvent.VK_UP){
+			keys[2] = true;
 		}
 	}
 
