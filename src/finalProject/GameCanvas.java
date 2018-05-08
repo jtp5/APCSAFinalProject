@@ -64,6 +64,13 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 			pirate.setY(pirate.getY() + pirate.getSpeed());
 		}
 		
+		if(pirate.getY() >= 300){
+			if(pirate.endedJump()){
+				keys[2] = false;
+			}
+			pirate.setEndedJump(false);
+		}
+		
 		if(keys[0] == true)
 		{
 			pirate.move("LEFT");

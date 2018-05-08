@@ -49,7 +49,9 @@ public abstract class MovingThing implements Locatable {
 	public String getFacing() {
 		return facing;
 	}
-	
+	public void setEndedJump(boolean b){
+		endedJump = b;
+	}
 	public boolean endedJump(){
 		return endedJump;
 	}
