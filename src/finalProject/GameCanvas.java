@@ -24,13 +24,18 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 	private boolean[] keys;
 	private BufferedImage back;
 	private int round;
+	private int timer;
+
+	private Skeletons skeletons;
 
 	public GameCanvas() {
 		setBackground(Color.black);
 
 		keys = new boolean[4];
 		pirate = new Pirate(300, 300, 2);
-		round = 0;
+		round = 1;
+		timer = 0;
+		skeletons = new Skeletons();
 
 		try {
 			background = ImageIO.read(new File("src\\finalProject\\beach.jpg"));
@@ -48,56 +53,84 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 		paint(window);
 	}
 
-	public void paint(Graphics window){
-		Graphics2D twoDGraph = (Graphics2D)window;
-		
-		if(back==null)
-			back = (BufferedImage)(createImage(getWidth(), getHeight()));
-		
+	public void paint(Graphics window) {
+		Graphics2D twoDGraph = (Graphics2D) window;
+		System.out.println(timer);
+		System.out.println(skeletons.getList().size());
+		timer++;
+		if (back == null)
+			back = (BufferedImage) (createImage(getWidth(), getHeight()));
+
 		Graphics graphToBack = back.createGraphics();
-		
+
 		graphToBack.drawImage(background, 0, 0, 800, 600, null);
-		
+
 		pirate.draw(graphToBack);
-		
-		if(pirate.endedJump()){
-			pirate.setY(pirate.getY() + pirate.getSpeed());
+
+		if (skeletons.getList().size() < round * 2) {
+			for (int i = 0; i < round; i++) {
+				if (timer >= 200) {
+					if (skeletons.getList().size() % 2 == 0) {
+						skeletons.add(new Skeleton(-100, 300, 1));
+						timer = 0;
+						System.out.println("test");
+					} else {
+						skeletons.add(new Skeleton(900, 300, 1));
+						timer = 0;
+					}
+				}
+			}
 		}
 		
-		if(pirate.getY() >= 300){
-			if(pirate.endedJump()){
+		for (int i = 0; i < skeletons.getList().size(); i++) {
+			skeletons.getList().get(i).draw(graphToBack);
+		}
+
+		for (int i = 0; i < skeletons.getList().size(); i++) {
+			if (skeletons.getList().get(i).getX() < pirate.getX()) {
+				skeletons.getList().get(i).move("RIGHT");
+			} else {
+				skeletons.getList().get(i).move("LEFT");
+			}
+		}
+
+		if (pirate.endedJump()) {
+			pirate.setY(pirate.getY() + pirate.getSpeed());
+		}
+
+		if (pirate.getY() >= 300) {
+			if (pirate.endedJump()) {
 				keys[2] = false;
 			}
 			pirate.setEndedJump(false);
 		}
-		
-		if(keys[0] == true)
-		{
+
+		if (keys[0] == true) {
 			pirate.move("LEFT");
 		}
 
-		if(keys[1] == true){
+		if (keys[1] == true) {
 			pirate.move("RIGHT");
 		}
-		if(keys[2] == true && pirate.getY() <= 300 && pirate.getY() >= pirate.getY() - 100){
+		if (keys[2] == true && pirate.getY() <= 300 && pirate.getY() >= pirate.getY() - 100) {
 			pirate.move("UP");
 		}
-		
+
 		twoDGraph.drawImage(back, null, 0, 0);
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getKeyCode() == KeyEvent.VK_LEFT){
+		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 			keys[0] = true;
 			pirate.setFacing("LEFT");
 		}
-		if(e.getKeyCode() == KeyEvent.VK_RIGHT){
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			keys[1] = true;
 			pirate.setFacing("RIGHT");
 		}
-		if(e.getKeyCode() == KeyEvent.VK_UP){
+		if (e.getKeyCode() == KeyEvent.VK_UP) {
 			keys[2] = true;
 		}
 	}
@@ -105,12 +138,10 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		// TODO Auto-generated method stub
-		if (e.getKeyCode() == KeyEvent.VK_LEFT)
-		{
+		if (e.getKeyCode() == KeyEvent.VK_LEFT) {
 			keys[0] = false;
 		}
-		if (e.getKeyCode() == KeyEvent.VK_RIGHT)
-		{
+		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			keys[1] = false;
 		}
 	}
