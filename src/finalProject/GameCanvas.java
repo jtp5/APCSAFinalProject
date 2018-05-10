@@ -25,7 +25,9 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 	private BufferedImage back;
 	private int round;
 	private int timer;
+	private int shotTimer;
 
+	private ArrayList<Bullet> shots;
 	private Skeletons skeletons;
 
 	public GameCanvas() {
@@ -35,6 +37,8 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 		pirate = new Pirate(300, 300, 2);
 		round = 1;
 		timer = 0;
+		shotTimer = 0;
+		shots = new ArrayList<Bullet>();
 		skeletons = new Skeletons();
 
 		try {
@@ -58,6 +62,7 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 		System.out.println(timer);
 		System.out.println(skeletons.getList().size());
 		timer++;
+		shotTimer++;
 		if (back == null)
 			back = (BufferedImage) (createImage(getWidth(), getHeight()));
 
@@ -83,13 +88,14 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 		}
 		
 		for (int i = 0; i < skeletons.getList().size(); i++) {
+			if(skeletons.getList().get(i).isAlive())
 			skeletons.getList().get(i).draw(graphToBack);
 		}
 
 		for (int i = 0; i < skeletons.getList().size(); i++) {
-			if (skeletons.getList().get(i).getX() < pirate.getX()) {
+			if (skeletons.getList().get(i).getX() < pirate.getX() && skeletons.getList().get(i).isAlive()) {
 				skeletons.getList().get(i).move("RIGHT");
-			} else {
+			} else if(skeletons.getList().get(i).isAlive()) {
 				skeletons.getList().get(i).move("LEFT");
 			}
 		}
@@ -115,7 +121,34 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 		if (keys[2] == true && pirate.getY() <= 300 && pirate.getY() >= pirate.getY() - 100) {
 			pirate.move("UP");
 		}
-
+		if(keys[3] == true && shotTimer >= 200){
+			if(pirate.getFacing().equals("LEFT")){
+				shots.add(new Bullet(pirate.getX(), pirate.getY() + 40, 5, "LEFT"));
+				shotTimer = 0;
+			}
+			else{
+				shots.add(new Bullet(pirate.getX() + 40, pirate.getY() + 40, 5, "RIGHT"));
+				shotTimer = 0;
+			}
+		}
+		
+		for (int i = 0; i < shots.size(); i++) {
+			shots.get(i).draw(graphToBack);
+			shots.get(i).move(shots.get(i).getFacing());
+			if(shots.get(i).getX() < -10 || shots.get(i).getX() > 810)
+				shots.remove(i);
+		}
+		
+		for(int i = 0; i < shots.size(); i++){
+			for(int j = 0; j < skeletons.getList().size(); j++){
+				if(shots.get(i).getX() < skeletons.getList().get(j).getX() + 80 && shots.get(i).getX() > skeletons.getList().get(j).getX() && shots.get(i).getY() > skeletons.getList().get(j).getY() && skeletons.getList().get(j).isAlive()){
+					skeletons.getList().get(j).setAlive(false);
+					shots.remove(i);
+				}
+			}
+		}
+		
+		
 		twoDGraph.drawImage(back, null, 0, 0);
 	}
 
@@ -133,6 +166,9 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
 			keys[2] = true;
 		}
+		if(e.getKeyCode() == KeyEvent.VK_SPACE){
+			keys[3] = true;
+		}
 	}
 
 	@Override
@@ -143,6 +179,9 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 		}
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			keys[1] = false;
+		}
+		if(e.getKeyCode() == KeyEvent.VK_SPACE){
+			keys[3] = false;
 		}
 	}
 
