@@ -26,6 +26,8 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 	private int round;
 	private int timer;
 	private int shotTimer;
+	private int lives;
+	private boolean roundInProgress;
 
 	private ArrayList<Bullet> shots;
 	private Skeletons skeletons;
@@ -38,6 +40,8 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 		round = 1;
 		timer = 0;
 		shotTimer = 0;
+		lives = 3;
+		roundInProgress = true;
 		shots = new ArrayList<Bullet>();
 		skeletons = new Skeletons();
 
@@ -69,9 +73,28 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 		Graphics graphToBack = back.createGraphics();
 
 		graphToBack.drawImage(background, 0, 0, 800, 600, null);
+		
+		graphToBack.drawString("Round: " + round, 500, 550);
+		
+		graphToBack.drawString("Lives: " + lives, 575, 550);
 
 		pirate.draw(graphToBack);
 
+		if(skeletons.getList().size() == round * 2) {
+			roundInProgress = false;
+		for (int i = 0; i < skeletons.getList().size(); i++) {
+			if(skeletons.getList().get(i).isAlive()) {
+				roundInProgress = true;
+			}
+		}
+		}
+		
+		if(!roundInProgress) {
+			skeletons.getList().clear();
+			round++;
+			roundInProgress = true;
+		}
+		
 		if (skeletons.getList().size() < round * 2) {
 			for (int i = 0; i < round; i++) {
 				if (timer >= 200) {
@@ -118,7 +141,7 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 		if (keys[1] == true) {
 			pirate.move("RIGHT");
 		}
-		if (keys[2] == true && pirate.getY() <= 300 && pirate.getY() >= pirate.getY() - 100) {
+		if (keys[2] == true && pirate.getY() <= 300 && pirate.getY() >= pirate.getY() - 125) {
 			pirate.move("UP");
 		}
 		if(keys[3] == true && shotTimer >= 200){
@@ -166,7 +189,7 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 		if (e.getKeyCode() == KeyEvent.VK_UP) {
 			keys[2] = true;
 		}
-		if(e.getKeyCode() == KeyEvent.VK_SPACE){
+		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			keys[3] = true;
 		}
 	}
@@ -180,7 +203,7 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 		if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
 			keys[1] = false;
 		}
-		if(e.getKeyCode() == KeyEvent.VK_SPACE){
+		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 			keys[3] = false;
 		}
 	}

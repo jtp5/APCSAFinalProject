@@ -71,7 +71,7 @@ public abstract class MovingThing implements Locatable {
 
 		 if (direction.equals("UP") && !endedJump) {
 				 setY(getY() - getSpeed());
-				 if(getY() < 201){
+				 if(getY() < 175){
 					 endedJump = true;
 				 }
 		 }
