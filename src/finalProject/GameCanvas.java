@@ -94,8 +94,6 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 
 	public void paint(Graphics window) {
 		Graphics2D twoDGraph = (Graphics2D) window;
-		System.out.println(timer);
-		System.out.println(skeletons.getList().size());
 		timer++;
 		shotTimer++;
 		if (back == null)
@@ -136,7 +134,7 @@ public class GameCanvas extends Canvas implements KeyListener, Runnable {
 						if (skeletons.getList().size() % 2 == 0) {
 							skeletons.add(new Skeleton(-100, 300, 1));
 							timer = 0;
-							System.out.println("test");
+							
 						} else {
 							skeletons.add(new Skeleton(900, 300, 1));
 							timer = 0;
